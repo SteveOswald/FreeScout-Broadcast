@@ -46,11 +46,30 @@
         if (!toWasRequired) {
             return;
         }
+
         $to.prop('required', required);
         if (required) {
             $to.attr('required', 'required');
         } else {
             $to.removeAttr('required');
+        }
+
+        // FreeScout validates this form with Parsley, which reads the
+        // "required" constraint once at init time and caches it - toggling
+        // the plain HTML attribute afterwards has no effect on an
+        // already-initialized field. Parsley's own API has to be used to
+        // actually add/remove the constraint, and reset() clears the
+        // "Dies ist ein Pflichtfeld." error that may already be showing.
+        if (typeof $to.parsley === 'function') {
+            var field = $to.parsley();
+            if (field) {
+                if (required) {
+                    field.addConstraint('required', true, 32, true);
+                } else {
+                    field.removeConstraint('required');
+                }
+                field.reset();
+            }
         }
     }
 
