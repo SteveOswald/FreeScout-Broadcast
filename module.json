@@ -2,7 +2,7 @@
     "name": "Broadcast",
     "alias": "broadcast",
     "description": "Send bulk emails to recipient lists as a single conversation, without exposing recipients' addresses to each other. Replies from recipients start new conversations.",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "keywords": [
         "broadcast",
         "newsletter",
