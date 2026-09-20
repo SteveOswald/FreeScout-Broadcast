@@ -56,11 +56,49 @@
     </div>
 @endif
 
+@if (!empty($is_admin) && !empty($list->id))
+    <input type="hidden" name="permissions_submitted" value="1">
+    <div class="form-group">
+        <label class="col-sm-3 control-label">{{ __('Permissions') }}</label>
+        <div class="col-sm-8">
+            <p class="help-block">{{ __('Administrators can always edit and use every list. Grant other users access below.') }}</p>
+
+            @if (!count($users))
+                <p class="text-help">{{ __('No other users.') }}</p>
+            @else
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>{{ __('User') }}</th>
+                            <th class="text-center">{{ __('Can Edit') }}</th>
+                            <th class="text-center">{{ __('Can Use') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($users as $permission_user)
+                            @php($grant = $permissions->get($permission_user->id))
+                            <tr>
+                                <td>{{ $permission_user->getFullName() }}</td>
+                                <td class="text-center">
+                                    <input type="checkbox" name="permissions[{{ $permission_user->id }}][edit]" value="1" @if ($grant && $grant->can_edit) checked @endif>
+                                </td>
+                                <td class="text-center">
+                                    <input type="checkbox" name="permissions[{{ $permission_user->id }}][use]" value="1" @if ($grant && $grant->can_use) checked @endif>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
+        </div>
+    </div>
+@endif
+
 <div class="form-group">
     <div class="col-sm-8 col-sm-offset-3">
         <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>
         <a href="{{ route('broadcast.lists') }}" class="btn btn-default">{{ __('Cancel') }}</a>
-        @if (!empty($list->id))
+        @if (!empty($list->id) && Auth::user()->isAdmin())
             <button type="button" class="btn btn-link text-danger pull-right" id="broadcast-list-delete" data-url="{{ route('broadcast.lists.destroy', ['id' => $list->id]) }}">{{ __('Delete List') }}</button>
         @endif
     </div>

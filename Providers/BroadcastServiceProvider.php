@@ -54,17 +54,31 @@ class BroadcastServiceProvider extends ServiceProvider
 
         if (is_dir($langPath)) {
             $this->loadTranslationsFrom($langPath, 'broadcast');
+            $this->loadJsonTranslationsFrom($langPath);
         } else {
             $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'broadcast');
+            $this->loadJsonTranslationsFrom(__DIR__.'/../Resources/lang');
         }
     }
 
     /**
-     * Add "Recipient Lists" to the admin "Manage" menu.
+     * Add "Recipient Lists" to the "Manage" menu, for admins and for any
+     * user with edit rights on at least one list.
      */
     protected function registerMenuHook()
     {
         \Eventy::addAction('menu.manage.append', function () {
+            $user = \Auth::user();
+            if (!$user) {
+                return;
+            }
+
+            // Show the menu entry to admins unconditionally, and to anyone
+            // else who has been granted edit rights on at least one list.
+            if (!$user->isAdmin() && !BroadcastList::editableBy($user)->exists()) {
+                return;
+            }
+
             echo view('broadcast::partials.menu')->render();
         }, 20, 0);
     }
@@ -76,6 +90,11 @@ class BroadcastServiceProvider extends ServiceProvider
     protected function registerComposeFormHook()
     {
         \Eventy::addAction('conversation.create_form.before_subject', function ($conversation, $mailbox, $thread) {
+            $user = \Auth::user();
+            if (!$user) {
+                return;
+            }
+
             $lists = BroadcastList::withCount('members')
                 ->where(function ($query) use ($mailbox) {
                     $query->whereNull('mailbox_id');
@@ -83,6 +102,7 @@ class BroadcastServiceProvider extends ServiceProvider
                         $query->orWhere('mailbox_id', $mailbox->id);
                     }
                 })
+                ->usableBy($user)
                 ->orderBy('name')
                 ->get();
 

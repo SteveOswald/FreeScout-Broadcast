@@ -4,7 +4,8 @@ Send bulk emails and newsletters directly from FreeScout with the Broadcast modu
 
 ## Features
 
-- **Recipient lists** - create named lists of recipients (paste one address per line, or `Name <email@example.com>`), managed under *Manage → Recipient Lists* (admin only).
+- **Recipient lists** - create named lists of recipients (paste one address per line, or `Name <email@example.com>`), managed under *Manage → Recipient Lists*.
+- **Per-list permissions** - admins can create/delete lists and grant individual users the right to edit a list's members or just use it when composing, all from the list's edit page.
 - **Pick a list when composing** - when starting a *New Conversation* of type Email, an extra "Recipient List" field lets you choose a saved list instead of (or in addition to) typing individual recipients.
 - **True BCC-style privacy** - each recipient is sent their own individually addressed copy of the message. No recipient ever sees any other recipient's address, and real `Bcc:` headers are not used either (some mail clients still reveal Bcc'd addresses to the sender's other Bcc recipients via bounce/read receipts - this module avoids that entirely by sending one message per recipient).
 - **Only one conversation** - no matter how many recipients are on the list, sending the broadcast creates exactly one conversation in FreeScout, attached to a lightweight per-list placeholder contact, so every past broadcast to the same list is grouped together.
@@ -37,7 +38,9 @@ Send bulk emails and newsletters directly from FreeScout with the Broadcast modu
 
 ## Permissions
 
-Managing recipient lists (create/edit/delete) is restricted to administrators. Any agent who can start a new conversation in a mailbox can pick an existing list when composing.
+- **Administrators** can create and delete lists, edit any list, and grant other users access.
+- **Editing** a list (name, description, mailbox restriction, members) is otherwise limited to users an admin has explicitly granted "Can Edit" on that list, in the list's *Permissions* section.
+- **Using** a list (selecting it in the compose "Recipient List" field) is limited to users granted "Can Edit" or "Can Use" on that list. Users with no grant on a list never see it, neither in the compose picker nor on the *Recipient Lists* management page.
 
 ## Limitations (v1)
 

@@ -3,6 +3,8 @@
 namespace Modules\Broadcast\Entities;
 
 use App\Customer;
+use App\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class BroadcastList extends Model
@@ -17,6 +19,68 @@ class BroadcastList extends Model
     public function conversations()
     {
         return $this->hasMany(BroadcastConversation::class);
+    }
+
+    public function permissions()
+    {
+        return $this->hasMany(BroadcastListPermission::class);
+    }
+
+    /**
+     * Admins may always edit; anyone else needs an explicit can_edit grant
+     * for this list.
+     */
+    public function userCanEdit(User $user)
+    {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        return $this->permissions->where('user_id', $user->id)->where('can_edit', true)->isNotEmpty();
+    }
+
+    /**
+     * Admins and anyone allowed to edit the list may also use it; everyone
+     * else needs an explicit can_use grant.
+     */
+    public function userCanUse(User $user)
+    {
+        if ($this->userCanEdit($user)) {
+            return true;
+        }
+
+        return $this->permissions->where('user_id', $user->id)->where('can_use', true)->isNotEmpty();
+    }
+
+    /**
+     * Lists visible on the management page: all lists for admins, only the
+     * ones a non-admin has been granted edit rights on otherwise.
+     */
+    public function scopeEditableBy(Builder $query, User $user)
+    {
+        if ($user->isAdmin()) {
+            return $query;
+        }
+
+        return $query->whereHas('permissions', function ($q) use ($user) {
+            $q->where('user_id', $user->id)->where('can_edit', true);
+        });
+    }
+
+    /**
+     * Lists selectable in the compose recipient-list picker.
+     */
+    public function scopeUsableBy(Builder $query, User $user)
+    {
+        if ($user->isAdmin()) {
+            return $query;
+        }
+
+        return $query->whereHas('permissions', function ($q) use ($user) {
+            $q->where('user_id', $user->id)->where(function ($q2) {
+                $q2->where('can_edit', true)->orWhere('can_use', true);
+            });
+        });
     }
 
     /**

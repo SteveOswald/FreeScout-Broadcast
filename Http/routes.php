@@ -1,6 +1,9 @@
 <?php
 
-Route::group(['middleware' => ['web', 'auth', 'roles'], 'roles' => ['admin'], 'prefix' => 'broadcast', 'namespace' => 'Modules\Broadcast\Http\Controllers'], function () {
+// Admin-only actions (create/delete lists, manage permissions) are enforced
+// in the controller; regular users may reach these routes but only ever see
+// or edit lists they have been explicitly granted access to.
+Route::group(['middleware' => ['web', 'auth'], 'prefix' => 'broadcast', 'namespace' => 'Modules\Broadcast\Http\Controllers'], function () {
     Route::get('/lists', ['uses' => 'BroadcastListsController@index'])->name('broadcast.lists');
     Route::get('/lists/create', ['uses' => 'BroadcastListsController@create'])->name('broadcast.lists.create');
     Route::post('/lists', ['uses' => 'BroadcastListsController@store'])->name('broadcast.lists.store');

@@ -8,16 +8,22 @@
         <div class="flexy-item">
             <span class="heading">{{ __('Recipient Lists') }}@if (count($lists)) <small>({{ count($lists) }})</small>@endif</span>
         </div>
-        <div class="flexy-item margin-left">
-            <a href="{{ route('broadcast.lists.create') }}" class="btn btn-bordered">{{ __('New List') }}</a>
-        </div>
+        @if (Auth::user()->isAdmin())
+            <div class="flexy-item margin-left">
+                <a href="{{ route('broadcast.lists.create') }}" class="btn btn-bordered">{{ __('New List') }}</a>
+            </div>
+        @endif
         <div class="flexy-block"></div>
     </div>
 
     @include('partials/flash_messages')
 
     @if (!count($lists))
-        <p class="text-help margin-top">{{ __('No recipient lists yet. Create one to be able to send a broadcast email to a group of recipients without exposing their addresses to each other.') }}</p>
+        @if (Auth::user()->isAdmin())
+            <p class="text-help margin-top">{{ __('No recipient lists yet. Create one to be able to send a broadcast email to a group of recipients without exposing their addresses to each other.') }}</p>
+        @else
+            <p class="text-help margin-top">{{ __('No recipient lists yet. Ask an administrator to grant you access to one.') }}</p>
+        @endif
     @else
         <div class="card-list margin-top">
             @foreach ($lists as $list)
