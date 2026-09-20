@@ -1,6 +1,6 @@
 {{ csrf_field() }}
 @if (!empty($list->id))
-    @method('PUT')
+    {{ method_field('PUT') }}
 @endif
 
 <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">

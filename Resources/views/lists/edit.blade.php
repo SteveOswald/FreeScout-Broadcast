@@ -26,7 +26,7 @@
 
 <form id="broadcast-list-delete-form" method="POST" action="" style="display:none">
     {{ csrf_field() }}
-    @method('DELETE')
+    {{ method_field('DELETE') }}
 </form>
 @endsection
 
