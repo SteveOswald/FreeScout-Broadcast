@@ -34,7 +34,7 @@
     @parent
     $(function() {
         $('#broadcast-list-delete').on('click', function() {
-            if (!confirm({{ json_encode(__('Delete this recipient list? This cannot be undone.')) }})) {
+            if (!confirm({!! json_encode(__('Delete this recipient list? This cannot be undone.')) !!})) {
                 return;
             }
             $('#broadcast-list-delete-form').attr('action', $(this).data('url')).trigger('submit');
