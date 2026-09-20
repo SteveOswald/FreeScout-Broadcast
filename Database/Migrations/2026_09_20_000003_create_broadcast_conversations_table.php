@@ -13,10 +13,14 @@ class CreateBroadcastConversationsTable extends Migration
      */
     public function up()
     {
+        if (Schema::hasTable('broadcast_conversations')) {
+            return;
+        }
+
         Schema::create('broadcast_conversations', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('conversation_id')->unique();
-            $table->integer('broadcast_list_id')->nullable();
+            $table->unsignedInteger('conversation_id')->unique();
+            $table->unsignedInteger('broadcast_list_id')->nullable();
             $table->timestamps();
 
             $table->foreign('broadcast_list_id')->references('id')->on('broadcast_lists')->onDelete('set null');

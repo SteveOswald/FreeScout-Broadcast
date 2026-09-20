@@ -14,9 +14,13 @@ class CreateBroadcastSendsTable extends Migration
      */
     public function up()
     {
+        if (Schema::hasTable('broadcast_sends')) {
+            return;
+        }
+
         Schema::create('broadcast_sends', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('broadcast_conversation_id');
+            $table->unsignedInteger('broadcast_conversation_id');
             $table->string('email', 191);
             $table->string('name', 191)->nullable();
             $table->string('message_id', 191)->nullable();

@@ -8,9 +8,13 @@ class CreateBroadcastListMembersTable extends Migration
 {
     public function up()
     {
+        if (Schema::hasTable('broadcast_list_members')) {
+            return;
+        }
+
         Schema::create('broadcast_list_members', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('broadcast_list_id');
+            $table->unsignedInteger('broadcast_list_id');
             $table->string('email', 191);
             $table->string('name', 191)->nullable();
             $table->timestamps();

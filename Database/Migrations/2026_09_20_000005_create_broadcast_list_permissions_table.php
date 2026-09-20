@@ -8,10 +8,14 @@ class CreateBroadcastListPermissionsTable extends Migration
 {
     public function up()
     {
+        if (Schema::hasTable('broadcast_list_permissions')) {
+            return;
+        }
+
         Schema::create('broadcast_list_permissions', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('broadcast_list_id');
-            $table->integer('user_id');
+            $table->unsignedInteger('broadcast_list_id');
+            $table->unsignedInteger('user_id');
             // May edit the list's name/description/mailbox/members.
             $table->boolean('can_edit')->default(false);
             // May select the list as a recipient when composing (also true when can_edit is true).

@@ -8,6 +8,10 @@ class CreateBroadcastListsTable extends Migration
 {
     public function up()
     {
+        if (Schema::hasTable('broadcast_lists')) {
+            return;
+        }
+
         Schema::create('broadcast_lists', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('mailbox_id')->nullable();
