@@ -1,0 +1,22 @@
+{
+    "name": "Broadcast",
+    "alias": "broadcast",
+    "description": "Send bulk emails to recipient lists as a single conversation, without exposing recipients' addresses to each other. Replies from recipients start new conversations.",
+    "version": "1.0.0",
+    "keywords": [
+        "broadcast",
+        "newsletter",
+        "mass email",
+        "bcc"
+    ],
+    "active": 1,
+    "order": 0,
+    "providers": [
+        "Modules\\Broadcast\\Providers\\BroadcastServiceProvider"
+    ],
+    "aliases": {},
+    "files": [
+        "start.php"
+    ],
+    "requires": []
+}

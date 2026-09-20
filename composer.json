@@ -1,0 +1,27 @@
+{
+    "name": "freescout-helpdesk/broadcast",
+    "description": "Broadcast module for FreeScout - send bulk emails to recipient lists.",
+    "authors": [
+        {
+            "name": "Steve Oswald",
+            "email": "steve.oswald@ossinet.info"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\Broadcast\\Providers\\BroadcastServiceProvider"
+            ],
+            "aliases": {}
+        }
+    },
+    "require": {},
+    "replace": {
+        "laravel/framework": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Broadcast\\": ""
+        }
+    }
+}
