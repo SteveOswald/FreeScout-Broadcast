@@ -38,6 +38,21 @@
     var $hidden = $('#broadcast_list_id');
     var $multipleWrap = $('#multiple-conversations-wrap');
     var injectedOption = null;
+    // Remember whether "To" was originally mandatory, so we can restore
+    // that exact behavior once the list is deselected again.
+    var toWasRequired = $to.prop('required') || $to.attr('required') !== undefined;
+
+    function setToRequired(required) {
+        if (!toWasRequired) {
+            return;
+        }
+        $to.prop('required', required);
+        if (required) {
+            $to.attr('required', 'required');
+        } else {
+            $to.removeAttr('required');
+        }
+    }
 
     $picker.on('change', function() {
         var selected = $picker.find('option:selected');
@@ -51,6 +66,7 @@
         if (!listId) {
             $hidden.val('');
             $to.val(null).trigger('change');
+            setToRequired(true);
             $multipleWrap.removeClass('broadcast-hidden');
             return;
         }
@@ -62,6 +78,11 @@
         $to.val(null);
         injectedOption = new Option(label, email, true, true);
         $to.append(injectedOption).trigger('change');
+
+        // A list stands in for the "To" field, so it must not still be
+        // treated as a separately mandatory field (otherwise the browser
+        // blocks sending even though a valid recipient list is selected).
+        setToRequired(false);
 
         // CC/BCC would defeat the point of the list (everyone would see
         // each other), so clear them when a list is chosen.
